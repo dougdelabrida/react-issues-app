@@ -7,6 +7,10 @@ This project implements a simple list of React's issue based on the GitHub's API
 
 ## Deploying
 
+## Assumptions
+
+- Set labels as tiny colored circles with popup to display its name. Tags were really ugly, maybe a better solution can be found later.
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>

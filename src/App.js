@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Header, Table } from 'semantic-ui-react'
+import { Header, Table, Popup, Label } from 'semantic-ui-react'
 import { Paginator } from './Paginator'
 
 class App extends Component {
@@ -14,7 +14,7 @@ class App extends Component {
   async getIssues(params) {
     let totalPages = 0
 
-    const issues = await fetch(`https://api.github.com/repos/facebook/react/issues?page=${params.page}&state=${params.state}&per_page=6`)
+    const issues = await fetch(`https://api.github.com/repos/facebook/react/issues?page=${params.page}&state=${params.state}&per_page=8`)
       .then(response => {
         const [, last] = response.headers.get('Link').split('rel="next"')
         totalPages = last ? Number(last.match(/page=(.*?)&/)[1]) : params.page
@@ -86,9 +86,18 @@ class App extends Component {
                 <Table.Cell>{issue.created_at}</Table.Cell>
                 <Table.Cell>{issue.updated_at}</Table.Cell>
                 <Table.Cell>
-                  {issue.labels.map((label, i) => (
-                    <span key={`${label.id}_${i}`} className='ui tag label' style={{backgroundColor: '#' + label.color}}>{label.name}</span>
-                  ))}
+                  <Label.Group circular>
+                    {issue.labels.map((label, i) => (
+                      <Popup
+                        trigger={<Label circular empty key={`${label.id}_${i}`} style={{backgroundColor: '#' + label.color}}/>}
+                        key={i}
+                      >
+                        <Popup.Content>
+                          {label.name}
+                        </Popup.Content>
+                      </Popup>
+                    ))}
+                  </Label.Group>
                 </Table.Cell>
                 <Table.Cell>
                   <div className={`ui ${issue.state === 'open' ? 'green' : 'red'} label`}>{issue.state}</div>
