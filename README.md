@@ -17,6 +17,9 @@ Thanks to create-react-app, you can just run `npm run build`
 - The users must be able to filter by status, so it was added a group button with the options `All`, `Open` and `Closed`.
 - A Icon to view the user's photo and login was added to the table. It could be a good idea to retrive more informations about the user.
 
+## TODO
+- Add additional libraries to mock tests
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
