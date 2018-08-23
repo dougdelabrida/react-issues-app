@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Header, Table, Popup, Label } from 'semantic-ui-react'
 import { Paginator } from './Paginator'
 
+import { getFormattedDate } from './utils'
+
 class App extends Component {
 
   state = {
@@ -69,12 +71,12 @@ class App extends Component {
         <Table celled>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Issue Number</Table.HeaderCell>
-              <Table.HeaderCell>Title</Table.HeaderCell>
-              <Table.HeaderCell>Created At</Table.HeaderCell>
-              <Table.HeaderCell>Updated At</Table.HeaderCell>
-              <Table.HeaderCell>Labels</Table.HeaderCell>
-              <Table.HeaderCell>State</Table.HeaderCell>
+              <Table.HeaderCell width={1}>#</Table.HeaderCell>
+              <Table.HeaderCell width={8}>Title</Table.HeaderCell>
+              <Table.HeaderCell width={2}>Created At</Table.HeaderCell>
+              <Table.HeaderCell width={2}>Updated At</Table.HeaderCell>
+              <Table.HeaderCell width={2}>Labels</Table.HeaderCell>
+              <Table.HeaderCell width={1}>State</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
@@ -83,8 +85,8 @@ class App extends Component {
               <Table.Row key={issue.id}>
                 <Table.Cell>{issue.number}</Table.Cell>
                 <Table.Cell>{issue.title}</Table.Cell>
-                <Table.Cell>{issue.created_at}</Table.Cell>
-                <Table.Cell>{issue.updated_at}</Table.Cell>
+                <Table.Cell>{getFormattedDate(issue.created_at)}</Table.Cell>
+                <Table.Cell>{getFormattedDate(issue.updated_at)}</Table.Cell>
                 <Table.Cell>
                   <Label.Group circular>
                     {issue.labels.map((label, i) => (
