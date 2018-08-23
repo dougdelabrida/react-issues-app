@@ -32,7 +32,6 @@ class App extends Component {
       .then(response => {
         const [, last] = response.headers.get('Link').split('rel="next"')
         totalPages = last ? Number(last.match(/page=(.*?)&/)[1]) : params.page
-        // TODO IMPROVE
         return response.json()
       })
 
@@ -51,6 +50,7 @@ class App extends Component {
       this.setState({
         isLoading: false,
         selectedState,
+        selectedPage: 1,
         ...response
       })
     })
@@ -61,7 +61,7 @@ class App extends Component {
 
     const params = {
       page,
-      state: 'all'
+      state: this.state.selectedState
     }
 
     this.getIssues(params).then(response => {
@@ -174,6 +174,7 @@ class App extends Component {
 
           <Paginator selectedPage={selectedPage} totalPages={totalPages} onSelectPage={this.handleOnSelectPage} />
         </Table>
+
         {errorMessage && <Message negative>
           <Message.Header>Something went wrong!</Message.Header>
           <p>{errorMessage}</p>
