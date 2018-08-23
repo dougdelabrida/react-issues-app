@@ -1,6 +1,16 @@
 import React, { Component } from 'react'
-import { Header, Table, Popup, Label, Button, Icon } from 'semantic-ui-react'
 import { Paginator } from './Paginator'
+import {
+  Header,
+  Table,
+  Popup,
+  Label,
+  Button,
+  Icon,
+  Message,
+  Card,
+  Image
+} from 'semantic-ui-react'
 
 import { getFormattedDate } from './utils'
 
@@ -11,7 +21,8 @@ class App extends Component {
     selectedPage: 1,
     selectedState: 'all',
     totalPages: 0,
-    isLoading: false
+    isLoading: false,
+    errorMessage: ''
   }
 
   async getIssues(params) {
@@ -75,17 +86,22 @@ class App extends Component {
         isLoading: false,
         ...response
       })
+    }).catch(() => {
+      this.setState({
+        isLoading: false,
+        errorMessage: `It was not possible to fetch data from the server. Please, try again later.`
+      })
     })
   }
 
   render() {
-    const { isLoading, selectedState, issues, selectedPage, totalPages } = this.state
+    const { isLoading,selectedState, issues, selectedPage, totalPages, errorMessage } = this.state
     return (
       <div className="ui container">
         <div className={`ui transition dimmer ${isLoading ? 'active' : null}`}>
           <div className='ui loader'/>
         </div>
-        <header className="header">
+        <header className="app-header">
           <Header as='h1'>React's Issues</Header>
         </header>
         <div>
@@ -110,6 +126,7 @@ class App extends Component {
         <Table celled selectable>
           <Table.Header>
             <Table.Row>
+              <Table.HeaderCell width={1}></Table.HeaderCell>
               <Table.HeaderCell width={1}>#</Table.HeaderCell>
               <Table.HeaderCell width={7}>Title</Table.HeaderCell>
               <Table.HeaderCell width={2}>Created At</Table.HeaderCell>
@@ -122,6 +139,14 @@ class App extends Component {
           <Table.Body>
             {issues.map(issue => (
               <Table.Row key={issue.id}>
+                <Table.Cell>
+                  <Popup trigger={<Button icon><Icon name='user' /></Button>}>
+                    <Popup.Content>
+                      <Image size='small' src={issue.user.avatar_url} />
+                      <Header as='h2'>{issue.user.login}</Header>
+                    </Popup.Content>
+                  </Popup>
+                </Table.Cell>
                 <Table.Cell>{issue.number}</Table.Cell>
                 <Table.Cell>{issue.title}</Table.Cell>
                 <Table.Cell>{getFormattedDate(issue.created_at)}</Table.Cell>
@@ -149,6 +174,10 @@ class App extends Component {
 
           <Paginator selectedPage={selectedPage} totalPages={totalPages} onSelectPage={this.handleOnSelectPage} />
         </Table>
+        {errorMessage && <Message negative>
+          <Message.Header>Something went wrong!</Message.Header>
+          <p>{errorMessage}</p>
+        </Message>}
       </div>
     )
   }
