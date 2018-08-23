@@ -4,6 +4,12 @@ body {
   font-family: sans-serif;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  height: 80px;
+}
+
 .ui.empty.circular.label, .ui.empty.circular.labels .label {
   width: 1.3em;
   height: 1.3em;

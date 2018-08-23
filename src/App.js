@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Header, Table, Popup, Label } from 'semantic-ui-react'
+import { Header, Table, Popup, Label, Button, Icon } from 'semantic-ui-react'
 import { Paginator } from './Paginator'
 
 import { getFormattedDate } from './utils'
@@ -9,6 +9,7 @@ class App extends Component {
   state = {
     issues: [],
     selectedPage: 1,
+    selectedState: 'all',
     totalPages: 0,
     isLoading: false
   }
@@ -27,6 +28,23 @@ class App extends Component {
       return {totalPages, issues}
   }
 
+  handleSelectState = (selectedState) => {
+    this.setState({isLoading: true})
+
+    const params = {
+      page: 1,
+      state: selectedState
+    }
+
+    this.getIssues(params).then(response => {
+      this.setState({
+        isLoading: false,
+        selectedState,
+        ...response
+      })
+    })
+  }
+
   handleOnSelectPage = (page) => {
     this.setState({isLoading: true})
 
@@ -34,6 +52,7 @@ class App extends Component {
       page,
       state: 'all'
     }
+
     this.getIssues(params).then(response => {
       this.setState({
         isLoading: false,
@@ -60,19 +79,39 @@ class App extends Component {
   }
 
   render() {
+    const { isLoading, selectedState, issues, selectedPage, totalPages } = this.state
     return (
       <div className="ui container">
-        <div className={`ui transition dimmer ${this.state.isLoading ? 'active' : null}`}>
+        <div className={`ui transition dimmer ${isLoading ? 'active' : null}`}>
           <div className='ui loader'/>
         </div>
-        <header>
+        <header className="header">
           <Header as='h1'>React's Issues</Header>
         </header>
-        <Table celled>
+        <div>
+          <Button.Group>
+            <Button
+              active={selectedState === 'all'}
+              onClick={() => this.handleSelectState('all')}>
+                All
+            </Button>
+            <Button
+              active={selectedState === 'open'}
+              onClick={() => this.handleSelectState('open')}>
+                Open
+            </Button>
+            <Button
+              active={selectedState === 'closed'}
+              onClick={() => this.handleSelectState('closed')}>
+                Closed
+            </Button>
+          </Button.Group>
+        </div>
+        <Table celled selectable>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell width={1}>#</Table.HeaderCell>
-              <Table.HeaderCell width={8}>Title</Table.HeaderCell>
+              <Table.HeaderCell width={7}>Title</Table.HeaderCell>
               <Table.HeaderCell width={2}>Created At</Table.HeaderCell>
               <Table.HeaderCell width={2}>Updated At</Table.HeaderCell>
               <Table.HeaderCell width={2}>Labels</Table.HeaderCell>
@@ -81,7 +120,7 @@ class App extends Component {
           </Table.Header>
 
           <Table.Body>
-            {this.state.issues.map(issue => (
+            {issues.map(issue => (
               <Table.Row key={issue.id}>
                 <Table.Cell>{issue.number}</Table.Cell>
                 <Table.Cell>{issue.title}</Table.Cell>
@@ -108,7 +147,7 @@ class App extends Component {
             ))}
           </Table.Body>
 
-          <Paginator selectedPage={this.state.selectedPage} totalPages={this.state.totalPages} onSelectPage={this.handleOnSelectPage} />
+          <Paginator selectedPage={selectedPage} totalPages={totalPages} onSelectPage={this.handleOnSelectPage} />
         </Table>
       </div>
     )
